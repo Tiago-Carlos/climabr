@@ -14,7 +14,7 @@ export class HomePage {
   errorMessage = null;
   cities: City[] = [];
   history: City[] = [];
-  isHistoryVisible = true;
+  isHistoryVisible = false;
 
   constructor(
     private readonly cityService: SearchCityService,
@@ -27,7 +27,12 @@ export class HomePage {
     await this.loadHistory();
     await this.storage.get("history").then(async(hist) => {
       if (!hist) {
+        console.log("Troquei pra true on init")
+        this.isHistoryVisible = false
         await this.storage.set("history", [])
+      }
+      else if (hist.length != 0) {
+        this.isHistoryVisible = true
       }
     });
   }
@@ -35,8 +40,15 @@ export class HomePage {
   async onSearch(query: string) {
     try {
       this.errorMessage = null;
-      this.cities = await this.cityService.searchByName(query);
-      this.isHistoryVisible = false;
+      if (query === "") {
+        console.log("Troquei pra true on search")
+        this.isHistoryVisible = true
+      }
+      else {
+        console.log("Troquei pra false on search")
+        this.isHistoryVisible = false;
+        this.cities = await this.cityService.searchByName(query);
+      }
     } catch (error) {
       this.errorMessage = error.message
     }
@@ -71,14 +83,5 @@ export class HomePage {
       arr.unshift(city.id)
       await this.storage.set("history", arr)
     })
-    
-  }
-
-  // TODO delete
-  async clearMemory() {
-    this.storage.get("history").then(async(hist) => {
-      console.log(hist)
-    })
-    this.storage.clear()
   }
 }
