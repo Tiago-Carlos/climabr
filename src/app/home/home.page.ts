@@ -27,7 +27,6 @@ export class HomePage {
     await this.loadHistory();
     await this.storage.get("history").then(async(hist) => {
       if (!hist) {
-        console.log("Troquei pra true on init")
         this.isHistoryVisible = false
         await this.storage.set("history", [])
       }
@@ -40,15 +39,13 @@ export class HomePage {
   async onSearch(query: string) {
     try {
       this.errorMessage = null;
-      if (query === "") {
-        console.log("Troquei pra true on search")
+      if (query === "" && this.history.length != 0) {
         this.isHistoryVisible = true
       }
       else {
-        console.log("Troquei pra false on search")
         this.isHistoryVisible = false;
-        this.cities = await this.cityService.searchByName(query);
       }
+      this.cities = await this.cityService.searchByName(query);
     } catch (error) {
       this.errorMessage = error.message
     }
@@ -76,10 +73,8 @@ export class HomePage {
       arr = hist
       let index = arr.indexOf(city.id)
       if (index != -1) {
-        console.log("queimei: " + index)
         arr.splice(index, 1)
       }
-      console.log(" gravei " + index)
       arr.unshift(city.id)
       await this.storage.set("history", arr)
     })
