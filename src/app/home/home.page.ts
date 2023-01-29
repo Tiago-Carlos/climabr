@@ -25,6 +25,11 @@ export class HomePage {
   async ngOnInit() {
     await this.storage.create();
     await this.loadHistory();
+    await this.storage.get("history").then(async(hist) => {
+      if (!hist) {
+        await this.storage.set("history", [])
+      }
+    });
   }
 
   async onSearch(query: string) {
@@ -40,11 +45,12 @@ export class HomePage {
   async loadHistory() {
     try {
       this.errorMessage = null;
-      this.history = []
-      this.storage.forEach((value) =>{
-        this.history.push(value)
+      await this.storage.get("history").then(async (hist) => {
+        if (!hist) { return; }
+        await hist.forEach(async (id:number) => {
+          this.history.push(await this.cityService.searchById(id))
+        });
       })
-      console.log(this.history)
     }
     catch (error) {
       this.errorMessage = error.message
@@ -53,6 +59,26 @@ export class HomePage {
 
   async onSelect(city: City) {
     await this.router.navigateByUrl(`/weather/${city.id}`, { replaceUrl: true })
-    await this.storage.set(city.name, city)
+    var arr : number[] = []
+    await this.storage.get("history").then(async(hist) => {
+      arr = hist
+      let index = arr.indexOf(city.id)
+      if (index != -1) {
+        console.log("queimei: " + index)
+        arr.splice(index, 1)
+      }
+      console.log(" gravei " + index)
+      arr.unshift(city.id)
+      await this.storage.set("history", arr)
+    })
+    
+  }
+
+  // TODO delete
+  async clearMemory() {
+    this.storage.get("history").then(async(hist) => {
+      console.log(hist)
+    })
+    this.storage.clear()
   }
 }

@@ -15,13 +15,17 @@
           debounce="500"
         ></ion-searchbar>
 
+        <ion-item button (click)="clearMemory()">
+          limpar
+        </ion-item>
+
         <ion-list lines="none" *ngIf="isHistoryVisible && !errorMessage">
           <small>historico</small>
           <ion-item detail button *ngFor="let hist of history" (click)="onSelect(hist)">
             <ion-label>
               <h2>{{ hist.name }}</h2>
               <ion-text color="primary">
-                <small>{{ hist.name }}</small>
+                <small>{{ hist.state }}</small>
               </ion-text>
             </ion-label>
           </ion-item>
