@@ -15,22 +15,10 @@
           debounce="500"
         ></ion-searchbar>
 
-        <ion-list lines="none" *ngIf="isHistoryVisible && !errorMessage">
-          <small>historico</small>
-          <ion-item detail button *ngFor="let hist of history" (click)="onSelect(hist)">
-            <ion-label>
-              <h2>{{ hist.name }}</h2>
-              <ion-text color="primary">
-                <small>{{ hist.state }}</small>
-              </ion-text>
-            </ion-label>
-          </ion-item>
-
-        </ion-list>
-
         <app-error-message *ngIf="errorMessage" [message]="errorMessage"></app-error-message>
 
         <ion-list lines="none" *ngIf="!errorMessage">
+          <small *ngIf="isHistoryVisible && !errorMessage" >historico</small>
           <ion-item detail button *ngFor="let city of cities" (click)="onSelect(city)">
             <ion-label>
               <h2>{{ city.name }}</h2>

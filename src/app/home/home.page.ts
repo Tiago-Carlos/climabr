@@ -13,7 +13,6 @@ export class HomePage {
 
   errorMessage = null;
   cities: City[] = [];
-  history: City[] = [];
   isHistoryVisible = false;
 
   constructor(
@@ -39,7 +38,7 @@ export class HomePage {
   async onSearch(query: string) {
     try {
       this.errorMessage = null;
-      if (query === "" && this.history.length != 0) {
+      if (query === "" && this.cities.length != 0) {
         this.isHistoryVisible = true
       }
       else {
@@ -54,10 +53,11 @@ export class HomePage {
   async loadHistory() {
     try {
       this.errorMessage = null;
+      this.cities = []
       await this.storage.get("history").then(async (hist) => {
         if (!hist) { return; }
         await hist.forEach(async (id:number) => {
-          this.history.push(await this.cityService.searchById(id))
+          this.cities.push(await this.cityService.searchById(id))
         });
       })
     }
