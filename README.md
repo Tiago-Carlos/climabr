@@ -2,6 +2,10 @@
 
 Aplicação web para consulta da previsão do tempo de cidades brasileiras.
 
+# Integrantes do grupo
+
+Tiago de Oliveira Carlos
+
 # Como utilizar?
 
 Clone este repositório.
